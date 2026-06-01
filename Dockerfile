@@ -23,4 +23,4 @@ RUN mkdir -p $HERMES_HOME/profiles/implant-diploma/skills/implant-diploma-coach 
 
 COPY server.py /app/server.py
 
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["sh", "-c", "uvicorn server:app --host 0.0.0.0 --port ${PORT:-8080}"]
