@@ -17,6 +17,7 @@ RUN mkdir -p $HERMES_HOME/skills/implant-diploma-coach \
 COPY implant-diploma-coach/SKILL.md $HERMES_HOME/skills/implant-diploma-coach/SKILL.md
 COPY SOUL.md $HERMES_HOME/profiles/implant-diploma/SOUL.md
 COPY config.yaml $HERMES_HOME/config.yaml
+COPY config.yaml $HERMES_HOME/profiles/implant-diploma/config.yaml
 
 RUN mkdir -p $HERMES_HOME/profiles/implant-diploma/skills/implant-diploma-coach \
     && cp $HERMES_HOME/skills/implant-diploma-coach/SKILL.md $HERMES_HOME/profiles/implant-diploma/skills/implant-diploma-coach/SKILL.md
