@@ -18,6 +18,7 @@ RUN mkdir -p $HERMES_HOME/skills/implant-diploma-coach \
 # Copy skill and personality
 COPY implant-diploma-coach/SKILL.md $HERMES_HOME/skills/implant-diploma-coach/SKILL.md
 COPY SOUL.md $HERMES_HOME/profiles/implant-diploma/SOUL.md
+COPY config.yaml $HERMES_HOME/config.yaml
 
 # Create profile config
 RUN mkdir -p $HERMES_HOME/profiles/implant-diploma/skills/implant-diploma-coach \
