@@ -19,8 +19,16 @@ class ChatRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    keys = {k: "***set***" for k in ["DEEPSEEK_API_KEY", "OPENROUTER_API_KEY"] if os.environ.get(k)}
-    return {"status": "ok", "agent": "implant-diploma-coach", "keys": keys}
+    return {"status": "ok", "agent": "implant-diploma-coach"}
+
+@app.get("/debug")
+def debug():
+    env = dict(os.environ)
+    return {
+        "openrouter_key": "set" if env.get("OPENROUTER_API_KEY") else "missing",
+        "openrouter_len": len(env.get("OPENROUTER_API_KEY", "")),
+        "deepseek_key": "set" if env.get("DEEPSEEK_API_KEY") else "missing",
+    }
 
 @app.post("/api/chat")
 def chat(req: ChatRequest):
