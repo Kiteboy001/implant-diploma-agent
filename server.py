@@ -19,7 +19,8 @@ class ChatRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "agent": "implant-diploma-coach"}
+    keys = {k: "***set***" for k in ["DEEPSEEK_API_KEY", "OPENROUTER_API_KEY"] if os.environ.get(k)}
+    return {"status": "ok", "agent": "implant-diploma-coach", "keys": keys}
 
 @app.post("/api/chat")
 def chat(req: ChatRequest):
