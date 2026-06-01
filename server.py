@@ -45,7 +45,8 @@ def chat(req: ChatRequest):
         )
         
         if result.returncode != 0:
-            return {"reply": f"Error: {result.stderr[:500]}"}
+            err = result.stderr.strip() or result.stdout.strip() or "(no output)"
+            return {"reply": f"Error (code {result.returncode}): {err[:500]}"}
         
         reply = result.stdout.strip()
         if not reply:
