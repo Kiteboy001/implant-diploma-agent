@@ -6,7 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir git+https://github.com/NousResearch/hermes-agent.git
+RUN pip install --no-cache-dir \
+    git+https://github.com/NousResearch/hermes-agent.git \
+    fastapi uvicorn
 
 ENV HERMES_HOME=/root/.hermes
 RUN mkdir -p $HERMES_HOME/skills/implant-diploma-coach \
@@ -19,9 +21,6 @@ COPY config.yaml $HERMES_HOME/config.yaml
 RUN mkdir -p $HERMES_HOME/profiles/implant-diploma/skills/implant-diploma-coach \
     && cp $HERMES_HOME/skills/implant-diploma-coach/SKILL.md $HERMES_HOME/profiles/implant-diploma/skills/implant-diploma-coach/SKILL.md
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY server.py /app/server.py
 
-EXPOSE 8642
-
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8080"]
