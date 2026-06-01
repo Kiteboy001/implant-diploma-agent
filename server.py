@@ -24,6 +24,11 @@ def health():
 @app.post("/api/chat")
 def chat(req: ChatRequest):
     try:
+        # Build env with Railway variables
+        env = dict(os.environ)
+        env["HOME"] = "/root"
+        env["HERMES_HOME"] = "/root/.hermes"
+        
         result = subprocess.run(
             [
                 "hermes",
@@ -36,14 +41,17 @@ def chat(req: ChatRequest):
             capture_output=True,
             text=True,
             timeout=120,
-            env={**os.environ, "HOME": "/root"},
+            env=env,
         )
+        
+        if result.returncode != 0:
+            return {"reply": f"Error: {result.stderr[:500]}"}
+        
         reply = result.stdout.strip()
-        if not reply and result.stderr:
-            reply = "I'm having trouble processing that. Please try again."
+        if not reply:
+            reply = "I processed your message but received an empty response."
         return {"reply": reply}
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail="Agent timed out")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-# trigger redeploy
