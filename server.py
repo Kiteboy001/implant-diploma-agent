@@ -61,25 +61,15 @@ def chat(req: ChatRequest):
         if not reply:
             reply = "I processed your message but received an empty response."
         
-        # Strip Chromium/browser engine warnings from Railway
-        warnings = [
+        # Strip system warnings from Railway (not user-facing)
+        for w in [
             "⚠ tirith security scanner enabled but not available",
             "Browser engine (Chromium, for web browsing tools) is not installed",
-        ]
-        for w in warnings:
-            # Remove the warning line (and any continuation) wherever it appears
-            while w in reply:
-                idx = reply.find(w)
-                # Find start of the line containing the warning
-                line_start = reply.rfind("\n", 0, idx)
-                line_start = line_start + 1 if line_start != -1 else 0
-                # Find end of the warning block (end of line, possibly with extra text)
-                line_end = reply.find("\n", idx)
-                if line_end == -1:
-                    line_end = len(reply)
-                reply = reply[:line_start] + reply[line_end:]
-            # Clean up blank lines that may result
-            reply = "\n".join(line for line in reply.split("\n") if line.strip())
+            "Install browser manually and try again.",
+        ]:
+            reply = reply.replace(w, "")
+        # Clean up any blank lines and leading/trailing whitespace
+        reply = "\n".join(line for line in reply.split("\n") if line.strip()).strip()
         return {"reply": reply}
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail="Agent timed out")
