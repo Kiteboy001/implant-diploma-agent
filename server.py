@@ -62,13 +62,18 @@ def chat(req: ChatRequest):
             reply = "I processed your message but received an empty response."
         
         # Strip system warnings from Railway (not user-facing)
-        for w in [
-            "⚠ tirith security scanner enabled but not available",
-            "Browser engine (Chromium, for web browsing tools) is not installed",
-            "Install browser manually and try again.",
-        ]:
-            reply = reply.replace(w, "")
-        # Clean up any blank lines and leading/trailing whitespace
+        import re
+        # Remove entire lines containing these warning fragments
+        patterns = [
+            r"^.*tirith.*$",
+            r"^.*Browser engine.*$",
+            r"^.*Install browser.*$",
+            r"^.*no install script.*$",
+            r"^.*command scanning will use.*$",
+        ]
+        for p in patterns:
+            reply = re.sub(p, "", reply, flags=re.MULTILINE)
+        # Clean up blank lines
         reply = "\n".join(line for line in reply.split("\n") if line.strip()).strip()
         return {"reply": reply}
     except subprocess.TimeoutExpired:
