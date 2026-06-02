@@ -60,6 +60,12 @@ def chat(req: ChatRequest):
         reply = result.stdout.strip()
         if not reply:
             reply = "I processed your message but received an empty response."
+        
+        # Strip Chromium/browser engine warnings from Railway
+        warning = "Browser engine (Chromium, for web browsing tools) is not installed"
+        if reply.startswith(warning):
+            lines = reply.split("\n", 1)
+            reply = lines[1].strip() if len(lines) > 1 else reply
         return {"reply": reply}
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail="Agent timed out")
